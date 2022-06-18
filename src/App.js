@@ -7,16 +7,11 @@ import Game from "./Game";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>
-          Codeaphone
-        </h1>
-        <button>
-          Join
-        </button>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/play" element={<Game />} />
+      <Route path="/signin" element={<Signin />} />
+    </Routes>
   );
 }
 
