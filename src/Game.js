@@ -3,6 +3,7 @@ import * as FirebaseService from "./api/firebase";
 
 const Game = () => {
   const [user, setUser] = useState(null);
+  const [online, setOnline] = useState([]);
   useEffect(() => {
     FirebaseService.authenticateAnonymously().then((userCredentials) => {
       setUser(userCredentials.user);
@@ -13,20 +14,19 @@ const Game = () => {
   useEffect(() => {
     if (user) {
       console.log("Listening");
-      FirebaseService.online(user.uid);
-      var listener = FirebaseService.getGameListener((snapshot) =>
-        console.log("snap")
-      );
-
-      return () => {
-        console.log("unmounting");
-        FirebaseService.removeOnline(user.uid).then(() => {
-          listener();
+      FirebaseService.online(user.uid).then(() => {
+        FirebaseService.getOnline().then((users) => {
+          setOnline(users);
         });
-      };
+      });
     }
   }, [user]);
-  return <a href="/">test</a>;
+  return (
+    <div>
+      <a href="/">test</a>
+      <p>{online.length} users online</p>
+    </div>
+  );
 };
 
 export default Game;

@@ -15,7 +15,7 @@ import {
   deleteDoc,
   setDoc,
 } from "firebase/firestore";
-import { getDatabase, onDisconnect, ref, set } from "firebase/database";
+import { get, getDatabase, onDisconnect, ref, set } from "firebase/database";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
 const firebaseConfig = {
@@ -52,18 +52,20 @@ export const setUserOnline = (uid) => {
 };
 
 export const getOnline = () => {
-  return getDocs(onlineRef);
-};
-
-export const removeOnline = (uid) => {
-  console.log("removing online");
-  return deleteDoc(doc(onlineRef, uid));
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, "users")).then((snapshot) => {
+      if (snapshot.exists) {
+        let snap = snapshot.val();
+        let users = Object.keys(snap);
+        resolve(users.filter((i) => snap[i].online));
+      }
+      resolve([]);
+    });
+  });
 };
 
 export const createGame = () => {
-  return addDoc(gamesRef, {
-    created: serverTimestamp(),
-  });
+  //return set
 };
 
 export const getGameListener = (callback) => {
