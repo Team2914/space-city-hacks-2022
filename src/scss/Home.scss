@@ -1,0 +1,42 @@
+$blue_light: #83d0Cb;
+$blue: #14213d;
+$gray: #e5e5e5;
+$orange: #fca312;
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+body {
+    background-image: linear-gradient(to left bottom, $blue_light, $blue);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+button {
+    background-color: transparent;
+    color: #ffffff40;
+    padding: 10px;
+    outline: none;
+    border: 1px solid #ffffff40;
+    border-radius: 5px;
+}
+
+h1 {
+    color: $gray;
+    font-size: 48pt;
+    margin: 20px 0;
+}
+
+.title-con {
+    margin-top: 20vh;
+}
+
+.title {
+    text-align: center;
+    justify-content: center;
+    text-shadow: 3px 3px #83d0Cb40;
+}
