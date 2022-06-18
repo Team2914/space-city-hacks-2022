@@ -1,33 +1,21 @@
-$blue_light: #83d0Cb;
-$blue: #14213d;
-$gray: #e5e5e5;
-$orange: #fca312;
+@import './Main.scss';
 
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
 
-body {
-    background-image: linear-gradient(to left bottom, $blue_light, $blue);
+#join-con {
+    height: 50vh;
+    background-image: linear-gradient(to right, $blue, $blue_light 95%);
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
 
-h1 {
+#home-title, #join-btn {
     color: $gray;
-    font-size: 48pt;
-    margin: 20px 0;
 }
 
-.title-con {
-    margin-top: 20vh;
+#join-btn {
+    margin-top: 30px;
 }
 
-.title {
-    text-align: center;
-    justify-content: center;
-    text-shadow: 3px 3px #83d0Cb40;
+#instructions {
+    flex-basis: 50%;
 }
