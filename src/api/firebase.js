@@ -13,7 +13,9 @@ import {
   serverTimestamp,
   arrayUnion,
   deleteDoc,
+  setDoc,
 } from "firebase/firestore";
+import { get, getDatabase, onDisconnect, ref, set } from "firebase/database";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
 const firebaseConfig = {
@@ -27,6 +29,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const realtime = getDatabase();
 const gamesRef = collection(db, "games");
 const onlineRef = collection(db, "online");
 
@@ -34,22 +37,38 @@ export const authenticateAnonymously = () => {
   return signInAnonymously(getAuth(app));
 };
 
-export const addUserOnline = (uid) => {
-  return addDoc(onlineRef, {
-    id: uid,
-  });
+export const online = (uid) => {
+  return onDisconnect(ref(realtime, "users/" + uid))
+    .set({ online: false })
+    .then(() =>
+      set(ref(realtime, "users/" + uid), {
+        online: true,
+      })
+    );
+};
+
+export const setUserOnline = (uid) => {
+  return setDoc(doc(onlineRef, uid), { timeStamp: serverTimestamp() });
 };
 
 export const getOnline = () => {
-  return getDocs(onlineRef);
-};
-
-export const removeOnline = (uid) => {
-  return deleteDoc(doc(onlineRef, uid));
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, "users")).then((snapshot) => {
+      if (snapshot.exists) {
+        let snap = snapshot.val();
+        let users = Object.keys(snap);
+        resolve(users.filter((i) => snap[i].online));
+      }
+      resolve([]);
+    });
+  });
 };
 
 export const createGame = () => {
-  return addDoc(gamesRef, {
-    created: serverTimestamp(),
-  });
+  //return set
+};
+
+export const getGameListener = (callback) => {
+  const q = query(gamesRef);
+  return onSnapshot(q, callback);
 };
