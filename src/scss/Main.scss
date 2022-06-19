@@ -48,15 +48,15 @@ p {
 
 button {
     outline: none;
-    border: 1px solid #ffffff20;
+    border: 1px solid #0000000e;
     border-radius: 5px;
-    background: transparent;
     padding: 15px 20px;
+    background: #fff;
     cursor: pointer;
 }
 
 button:hover {
-    background: #ffffff10;
+    opacity: .5;
 }
 
 .shaded-button {
@@ -119,4 +119,3 @@ button:hover {
 textarea {
     resize: none;
 }
-
