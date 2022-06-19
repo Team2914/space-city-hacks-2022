@@ -161,7 +161,7 @@ const Game = () => {
 
           setUpdate(true);
         }
-      }, 100);
+      }, 50);
 
       return () => {
         clearInterval(timer);
