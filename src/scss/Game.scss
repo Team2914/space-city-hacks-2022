@@ -1,0 +1,19 @@
+@import './Main.scss';
+
+.topbar {
+    background-color: $blue_light;
+    padding: 1%;
+    margin: 1%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.round-info {
+
+}
+
+.prompt {
+    align-self: center;
+}

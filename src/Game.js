@@ -1,6 +1,7 @@
 import { arrayUnion } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import * as FirebaseService from "./api/firebase";
+import "./scss/Game.scss";
 
 const Game = () => {
   const [loading, setLoading] = useState(true);
@@ -120,6 +121,19 @@ const Game = () => {
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
       )}
       <button onClick={() => rotateGame()}>Next</button>
+
+      <div>
+        <div className="topbar">
+          <div className="round-info">
+            <h5>Round 1</h5>
+            <h5>0:30</h5>
+          </div>
+          <div className="prompt">
+            <h4>You have to code:</h4>
+            <h3>test</h3>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
