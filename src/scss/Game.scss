@@ -1,17 +1,18 @@
 @import './Main.scss';
 
-.topbar {
-    background-color: $blue_light;
-    padding: 1%;
-    margin: 1%;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+.game-con {
+    border-radius: 10px;
+    background: #fff;
 }
 
-.round-info {
+.prompt-con {
+    padding: 20px;
+}
 
+.status-panel {
+    display: flex;
+    justify-content: space-between;
 }
 
 .prompt {
