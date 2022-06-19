@@ -1,11 +1,11 @@
 import { arrayUnion } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import * as FirebaseService from "./api/firebase";
-import Editor from 'react-simple-code-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/themes/prism.css';
+import Editor from "react-simple-code-editor";
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import "prismjs/themes/prism.css";
 import "./scss/Game.scss";
 
 const Game = () => {
@@ -18,8 +18,7 @@ const Game = () => {
   const [gameState, setGameState] = useState();
   const [currentGame, setCurrentGame] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [code, setCode] = React.useState(`// place your code here\n`);
-
+  const [code, setCode] = React.useState(``);
 
   const NUM_ROUNDS = 6;
   const ROUND_TIME = 10 * 1000;
@@ -35,7 +34,7 @@ const Game = () => {
       var onlineListener;
       var gamesListener;
       var userListener = FirebaseService.trackUser(user.uid, (data) => {
-        setUserData(data)
+        setUserData(data);
       });
       FirebaseService.online(user.uid).then(() => {
         onlineListener = FirebaseService.getOnline((users) => {
@@ -80,7 +79,7 @@ const Game = () => {
   const onCreateGame = () => {
     setCreating(true);
     let onlineUsers = [...online];
-    let startTime = Date.now() + 15 * 1000;
+    let startTime = Date.now() + 0 * 1000;
     let rounds = [];
     for (let i = 0; i < NUM_ROUNDS; i++) {
       let round = { start: startTime, end: startTime + ROUND_TIME, index: i };
@@ -100,14 +99,27 @@ const Game = () => {
     });
   };
 
-  const rotateGame = () => {
+  const rotateGame = async () => {
+    var updates;
+    if (gameState === 0) {
+      updates = {
+        code: [...currentGame.code, code],
+      };
+    } else if (gameState === 1) {
+      updates = {
+        prompts: [...currentGame.prompts, code],
+      };
+    }
     var rounds = currentGame.rounds;
     rounds.splice(0, 1);
-    if (!rounds.length) {return}
+    if (!rounds.length) {
+      return;
+    }
     var updatedGame = {
       ...currentGame,
       index: (currentGame.index + 1) % games.length,
       rounds: rounds,
+      ...updates,
     };
 
     var newGameIndex = (currentGame.index - 1) % games.length;
@@ -123,14 +135,7 @@ const Game = () => {
       FirebaseService.updateGame(updatedGame.id, updatedGame),
       FirebaseService.setUserGame(user.uid, updatedUser.game),
     ]);
-  }
-
-  const addPrompt = (prompt) => {
-    FirebaseService.updateGame(currentGame.id, { prompts: arrayUnion(prompt) });
-  };
-
-  const addCode = (code) => {
-    FirebaseService.updateGame(currentGame.id, { code: arrayUnion(code) });
+    setCode("");
   };
 
   useEffect(() => {
@@ -144,7 +149,9 @@ const Game = () => {
         }
       }, 100);
 
-      return () => {clearInterval(timer)}
+      return () => {
+        clearInterval(timer);
+      };
     }
   }, [currentGame]);
 
@@ -155,42 +162,86 @@ const Game = () => {
         <button onClick={() => onCreateGame()}>Create Game</button>
       )}
       {creating && <p>creating...</p>}
-      {currentGame != null && gameState === 0 && (
-        <p>{currentGame.prompts[currentGame.prompts.length - 1]}</p>
-      )}
       {currentGame != null && gameState === 1 && (
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
       )}
       <button onClick={() => FirebaseService.resetGame(games)}>Reset</button>
       <button onClick={() => rotateGame()}>Next</button>
-      <div className="game-con">
-        <div className="prompt-con">
-            <h4 className="center bold">You have to code:</h4>
-            <h5 className="center">Something super cool and amazing</h5>
-        </div>
-        <Editor
-          value={code}
-          onValueChange={code => setCode(code)}
-          highlight={code => highlight(code, languages.js)}
-          padding={10}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 12,
-            border: '1px solid #e5e5e5',
-            background: '#e5e5e5',
-            minHeight: '250px'
-          }}
-        />
-        {currentGame != null && gameState === 0 && (
-          <div className="status-panel">
-              <h5 id="round" className="flex-item">Round: {currentGame.rounds[0].index + 1}</h5>
-              <h5 id="timer" className="flex-item">Time left: {timeLeft.toPrecision(2)}s</h5>
-              <button id="done" className="flex-item shaded-button">
+
+      {currentGame != null && (
+        <div className="game-con">
+          {gameState === 0 && (
+            <div>
+              <div className="prompt-con">
+                <h4 className="center bold">You have to code:</h4>
+                <h5 className="center">
+                  {currentGame.prompts[currentGame.prompts.length - 1]}
+                </h5>
+              </div>
+              <Editor
+                value={code}
+                onValueChange={(code) => setCode(code)}
+                highlight={(code) => highlight(code, languages.js)}
+                padding={10}
+                placeholder="// place your code here"
+                style={{
+                  fontFamily: '"Fira code", "Fira Mono", monospace',
+                  fontSize: 12,
+                  border: "1px solid #e5e5e5",
+                  background: "#e5e5e5",
+                  minHeight: "250px",
+                }}
+              />
+            </div>
+          )}
+          {gameState === 1 && (
+            <div>
+              <div className="prompt-con">
+                <h4 className="center bold">You have to describe:</h4>
+              </div>
+              <textarea
+                value={code}
+                onChange={(code) => setCode(code)}
+                padding={10}
+                style={{
+                  fontFamily: '"Fira code", "Fira Mono", monospace',
+                  fontSize: 12,
+                  border: "1px solid #e5e5e5",
+                  background: "#e5e5e5",
+                  minHeight: "250px",
+                }}
+              />
+              <Editor
+                value={currentGame.code[currentGame.code.length - 1]}
+                contentEditable={false}
+                highlight={(code) => highlight(code, languages.js)}
+                padding={10}
+                style={{
+                  fontFamily: '"Fira code", "Fira Mono", monospace',
+                  fontSize: 12,
+                  border: "1px solid #e5e5e5",
+                  background: "#e5e5e5",
+                  minHeight: "250px",
+                }}
+              />
+            </div>
+          )}
+          {currentGame != null && gameState === 0 && (
+            <div className="status-panel">
+              <h5 id="round" className="flex-item">
+                Round {/*currentGame.rounds[0].index + 1*/}
+              </h5>
+              <h5 id="timer" className="flex-item">
+                Time left: {Math.floor(timeLeft / 60)}:
+                {(timeLeft % 60).toPrecision(2)}s
+              </h5>
+              {/*<button id="done" className="flex-item shaded-button">
                 <h5>Done!</h5>
-              </button>
-          </div>
-        )}
-      </div>
+          </button>*/}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
