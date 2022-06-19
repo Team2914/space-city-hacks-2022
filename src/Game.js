@@ -1,3 +1,4 @@
+import { arrayUnion } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import * as FirebaseService from "./api/firebase";
 
@@ -77,7 +78,7 @@ const Game = () => {
     });
   };
 
-  const rotateGames = () => {
+  const rotateGame = () => {
     var updatedGames = [];
     var updatedUserAssigments = [];
     games.forEach((g) => {
@@ -95,6 +96,14 @@ const Game = () => {
     Promise.all([gamePromises, userPromises]);
   };
 
+  const addPrompt = (prompt) => {
+    FirebaseService.updateGame(currentGame.id, { prompts: arrayUnion(prompt) });
+  };
+
+  const addCode = (code) => {
+    FirebaseService.updateGame(currentGame.id, { code: arrayUnion(code) });
+  };
+
   return (
     <div>
       <a href="/">test</a>
@@ -110,7 +119,7 @@ const Game = () => {
       {currentGame && gameState == 1 && (
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
       )}
-      <button onClick={() => rotateGames()}>Next</button>
+      <button onClick={() => rotateGame()}>Next</button>
     </div>
   );
 };
