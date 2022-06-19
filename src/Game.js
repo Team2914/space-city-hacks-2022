@@ -20,6 +20,8 @@ const Game = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [code, setCode] = React.useState(``);
 
+  const [updating, setUpdating] = useState(false);
+
   const NUM_ROUNDS = 6;
   const ROUND_TIME = 10 * 1000;
 
@@ -100,16 +102,9 @@ const Game = () => {
   };
 
   const rotateGame = async () => {
+    setUpdating(true);
     var updates;
-    if (gameState === 0) {
-      updates = {
-        code: [...currentGame.code, code],
-      };
-    } else if (gameState === 1) {
-      updates = {
-        prompts: [...currentGame.prompts, code],
-      };
-    }
+
     var rounds = currentGame.rounds;
     rounds.splice(0, 1);
     if (!rounds.length) {
@@ -121,6 +116,13 @@ const Game = () => {
       rounds: rounds,
       ...updates,
     };
+
+    console.log("code: " + code);
+    if (gameState === 0) {
+      updatedGame.code = [...currentGame.code, code];
+    } else if (gameState === 1) {
+      updatedGame.prompts = [...currentGame.prompts, code];
+    }
 
     var newGameIndex = (currentGame.index - 1) % games.length;
     if (newGameIndex < 0) {
@@ -134,8 +136,10 @@ const Game = () => {
     Promise.all([
       FirebaseService.updateGame(updatedGame.id, updatedGame),
       FirebaseService.setUserGame(user.uid, updatedUser.game),
-    ]);
-    setCode("");
+    ]).then(() => {
+      setCode("");
+      setUpdating(false);
+    });
   };
 
   useEffect(() => {
@@ -144,7 +148,8 @@ const Game = () => {
         const currentTime = (currentGame.rounds[0].end - Date.now()) / 1000;
         setTimeLeft(currentTime);
 
-        if (currentTime <= 0 && currentGame) {
+        if (currentTime <= 0 && currentGame && !updating) {
+          console.log("rotating");
           rotateGame();
         }
       }, 100);
@@ -213,7 +218,7 @@ const Game = () => {
                   minHeight: "250px",
                 }}
               />
-              <textarea
+              {/*<textarea
                 value={code}
                 onChange={(code) => setCode(code)}
                 padding={10}
@@ -224,7 +229,7 @@ const Game = () => {
                   background: "#e5e5e5",
                   minHeight: "250px",
                 }}
-              />
+            />*/}
             </div>
           )}
           {currentGame != null && gameState === 0 && (
