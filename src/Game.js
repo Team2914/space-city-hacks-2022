@@ -24,7 +24,7 @@ const Game = () => {
   const [updating, setUpdating] = useState(false);
 
   const NUM_ROUNDS = 6;
-  const ROUND_TIME = 15 * 1000;
+  const ROUND_TIME = 180 * 1000;
 
   useEffect(() => {
     FirebaseService.authenticateAnonymously().then((userCredentials) => {
@@ -65,7 +65,12 @@ const Game = () => {
   useEffect(() => {
     if (userData) {
       console.log("userData game idx: " + userData.game);
-      setCurrentGame(games.find((g) => g.id === userData.game));
+      let g = games.find((g) => g.id === userData.game);
+      if (g && g.rounds.length > 0) {
+        setCurrentGame(g);
+      } else {
+        setCurrentGame(null);
+      }
     }
   }, [userData, games]);
 
@@ -171,6 +176,18 @@ const Game = () => {
     }
   }, [update]);
 
+  const combineCodeAndPrompts = (code, prompts) => {
+    console.log("Code: " + JSON.stringify(code));
+    var res = [];
+    prompts.forEach((p, i) => {
+      res.push({ text: p, type: 0 });
+      if (i < code.length - 1) {
+        res.push({ text: code[i], type: 1 });
+      }
+    });
+    return res;
+  };
+
   return (
     <div className="main gradient-2">
       <a href="/">test</a>
@@ -186,7 +203,7 @@ const Game = () => {
 
       {currentGame != null && (
         <div className="game-con">
-          {gameState === 0 && (
+          {gameState === 0 && !updating && (
             <div>
               <div className="prompt-con">
                 <h4 className="center bold">You have to code:</h4>
@@ -210,7 +227,7 @@ const Game = () => {
               />
             </div>
           )}
-          {gameState === 1 && (
+          {gameState === 1 && !updating && (
             <div>
               <div className="prompt-con">
                 <h4 className="center bold">You have to describe:</h4>
@@ -255,9 +272,10 @@ const Game = () => {
               <h5 id="round" className="flex-item">
                 Round {/*currentGame.rounds[0].index + 1*/}
               </h5>
+              {updating && <h5>Loading...</h5>}
               <h5 id="timer" className="flex-item">
                 Time left: {Math.floor(timeLeft / 60)}:
-                {Math.max((timeLeft % 60).toPrecision(2), 0)}s
+                {Math.max(Math.round((timeLeft % 60) * 100) / 100, 0)}s
               </h5>
               {/*<button id="done" className="flex-item shaded-button">
                 <h5>Done!</h5>
@@ -266,6 +284,33 @@ const Game = () => {
           )}
         </div>
       )}
+
+      {games
+        .filter((g) => g.rounds.length == 0)
+        .map((g) => {
+          return combineCodeAndPrompts(g.code, g.prompts).map((item, index) => {
+            if (item.type == 0) {
+              return <h5 className="center">{item.text}</h5>;
+            } else {
+              return (
+                <Editor
+                  value={item.text}
+                  contentEditable={false}
+                  highlight={(code) => highlight(code, languages.js)}
+                  padding={10}
+                  id="editor"
+                  style={{
+                    fontFamily: '"Fira code", "Fira Mono", monospace',
+                    fontSize: 12,
+                    border: "1px solid #e5e5e5",
+                    background: "#e5e5e5",
+                    margin: "1rem",
+                  }}
+                />
+              );
+            }
+          });
+        })}
     </div>
   );
 };
