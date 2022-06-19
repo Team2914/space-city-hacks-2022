@@ -26,8 +26,8 @@ const Home = () => {
             <h2>How To Play</h2>
             <p>
               Telecode is a game where every player will start out with a prompt,
-              and have 3 minuets to code a solution to the prompt.<br/><br/> After the 3 minuets have elapsed, you will
-              get 3 minuets to describe someone else's code.<br/><br/> At the end of a few of these rounds you can see 
+              and have 3 minutes to code a solution to the prompt.<br/><br/> After the 3 minutes have elapsed, you will
+              get 3 minutes to describe someone else's code.<br/><br/> At the end of a few of these rounds you can see 
               a map of all the prompts, the paths they took, and all the interesting ways the code got distorted 
               down the line!
             </p>
