@@ -7,7 +7,6 @@ import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css';
 import "./scss/Game.scss";
-import { SAMLAuthProvider } from "@firebase/auth";
 
 const Game = () => {
   const [loading, setLoading] = useState(true);
@@ -35,9 +34,9 @@ const Game = () => {
     if (user) {
       var onlineListener;
       var gamesListener;
-      var userListener = FirebaseService.trackUser(user.uid, (data) =>
+      var userListener = FirebaseService.trackUser(user.uid, (data) => {
         setUserData(data)
-      );
+      });
       FirebaseService.online(user.uid).then(() => {
         onlineListener = FirebaseService.getOnline((users) => {
           setOnline(users);
@@ -124,8 +123,7 @@ const Game = () => {
       FirebaseService.updateGame(updatedGame.id, updatedGame),
       FirebaseService.setUserGame(user.uid, updatedUser.game),
     ]);
-  };
-
+  }
 
   const addPrompt = (prompt) => {
     FirebaseService.updateGame(currentGame.id, { prompts: arrayUnion(prompt) });
@@ -138,9 +136,8 @@ const Game = () => {
   useEffect(() => {
     if (currentGame) {
       let timer = setInterval(() => {
-        let currentTime = (currentGame.rounds[0].end - Date.now())/1000
-
-        setTimeLeft(currentTime)
+        const currentTime = (currentGame.rounds[0].end - Date.now()) / 1000;
+        setTimeLeft(currentTime);
 
         if (currentTime <= 0 && currentGame) {
           rotateGame();
@@ -149,19 +146,19 @@ const Game = () => {
 
       return () => {clearInterval(timer)}
     }
-  }, [currentGame])
+  }, [currentGame]);
 
   return (
     <div className="main gradient-2">
       <a href="/">test</a>
-      {!loading && games.length == 0 && (
+      {!loading && games.length === 0 && (
         <button onClick={() => onCreateGame()}>Create Game</button>
       )}
       {creating && <p>creating...</p>}
-      {currentGame != null && gameState == 0 && (
+      {currentGame != null && gameState === 0 && (
         <p>{currentGame.prompts[currentGame.prompts.length - 1]}</p>
       )}
-      {currentGame != null && gameState == 1 && (
+      {currentGame != null && gameState === 1 && (
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
       )}
       <button onClick={() => FirebaseService.resetGame(games)}>Reset</button>
@@ -184,13 +181,13 @@ const Game = () => {
             minHeight: '250px'
           }}
         />
-        {currentGame != null && gameState == 0 && (
+        {currentGame != null && gameState === 0 && (
           <div className="status-panel">
-            <h5 id="round" className="flex-item">Round: {currentGame.rounds[0].index + 1}</h5>
-            <h5 id="timer" className="flex-item">Time left: {timeLeft.toPrecision(2)}s</h5>
-            <button id="done" className="flex-item shaded-button">
-              <h5>Done!</h5>
-            </button>
+              <h5 id="round" className="flex-item">Round: {currentGame.rounds[0].index + 1}</h5>
+              <h5 id="timer" className="flex-item">Time left: {timeLeft.toPrecision(2)}s</h5>
+              <button id="done" className="flex-item shaded-button">
+                <h5>Done!</h5>
+              </button>
           </div>
         )}
       </div>
