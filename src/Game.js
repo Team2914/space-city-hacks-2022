@@ -105,7 +105,7 @@ const Game = () => {
   const rotateGame = async () => {
     setUpdating(true);
 
-    var rounds = currentGame.rounds;
+    var rounds = [...currentGame.rounds];
     rounds.splice(0, 1);
     if (!rounds.length) {
       return;
@@ -219,25 +219,30 @@ const Game = () => {
                 contentEditable={false}
                 highlight={(code) => highlight(code, languages.js)}
                 padding={10}
+                id="editor"
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
                   fontSize: 12,
                   border: "1px solid #e5e5e5",
                   background: "#e5e5e5",
+                  margin: "1rem",
                 }}
               />
               <textarea
                 value={code}
                 onChange={(event) => {setCode(event.target.value)}}
                 padding={10}
+                id="describe-input"
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
                   fontSize: 12,
                   border: "1px solid #e5e5e5",
                   background: "#e5e5e5",
                   minHeight: "250px",
-                  width: "100%",
+                  width: "calc(100% - 2rem)z",
+                  margin: "1rem",
                 }}
+                placeholder="Describe the code..."
             />
             </div>
           )}
@@ -248,7 +253,7 @@ const Game = () => {
               </h5>
               <h5 id="timer" className="flex-item">
                 Time left: {Math.floor(timeLeft / 60)}:
-                {Math.max([(timeLeft % 60).toPrecision(2), 0])}s
+                {Math.max((timeLeft % 60).toPrecision(2), 0)}s
               </h5>
               {/*<button id="done" className="flex-item shaded-button">
                 <h5>Done!</h5>
