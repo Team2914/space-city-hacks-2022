@@ -19,6 +19,7 @@ const Game = () => {
   const [currentGame, setCurrentGame] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [code, setCode] = React.useState(``);
+  const [update, setUpdate] = useState(false);
 
   const [updating, setUpdating] = useState(false);
 
@@ -103,7 +104,6 @@ const Game = () => {
 
   const rotateGame = async () => {
     setUpdating(true);
-    var updates;
 
     var rounds = currentGame.rounds;
     rounds.splice(0, 1);
@@ -114,7 +114,6 @@ const Game = () => {
       ...currentGame,
       index: (currentGame.index + 1) % games.length,
       rounds: rounds,
-      ...updates,
     };
 
     console.log("code: " + code);
@@ -123,6 +122,8 @@ const Game = () => {
     } else if (gameState === 1) {
       updatedGame.prompts = [...currentGame.prompts, code];
     }
+
+    console.log(JSON.stringify(updatedGame));
 
     var newGameIndex = (currentGame.index - 1) % games.length;
     if (newGameIndex < 0) {
@@ -149,8 +150,9 @@ const Game = () => {
         setTimeLeft(currentTime);
 
         if (currentTime <= 0 && currentGame && !updating) {
-          console.log("rotating");
-          rotateGame();
+          console.log("rotating " + code);
+
+          setUpdate(true);
         }
       }, 100);
 
@@ -159,6 +161,13 @@ const Game = () => {
       };
     }
   }, [currentGame]);
+
+  useEffect(() => {
+    if (update) {
+      rotateGame();
+      setUpdate(false);
+    }
+  }, [update]);
 
   return (
     <div className="main gradient-2">
