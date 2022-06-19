@@ -96,6 +96,7 @@ const Game = () => {
   const rotateGame = () => {
     var rounds = currentGame.rounds;
     rounds.splice(0, 1);
+    if (!rounds.length) {return}
     var updatedGame = {
       ...currentGame,
       index: (currentGame.index + 1) % games.length,
@@ -128,16 +129,22 @@ const Game = () => {
   useEffect(() => {
     if (currentGame) {
       let timer = setInterval(() => {
-        setTimeLeft((currentGame.rounds[0].end - Date.now())/1000)
+        let currentTime = (currentGame.rounds[0].end - Date.now())/1000
 
-        if (timeLeft <= 0) {
-          //rotateGame();
+        setTimeLeft(currentTime)
+
+        if (currentTime <= 0 && currentGame) {
+          rotateGame();
         }
       }, 100);
 
       return () => {clearInterval(timer)}
     }
   }, [currentGame])
+
+  useEffect(() => {
+    
+  }, [timeLeft, currentGame])
 
   return (
     <div>
@@ -148,15 +155,15 @@ const Game = () => {
         <button onClick={() => onCreateGame()}>Create Game</button>
       )}
       {creating && <p>creating...</p>}
-      {currentGame && gameState == 0 && (
+      {currentGame != null && gameState == 0 && (
         <p>{currentGame.prompts[currentGame.prompts.length - 1]}</p>
       )}
-      {currentGame && gameState == 1 && (
+      {currentGame != null && gameState == 1 && (
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
       )}
       <button onClick={() => FirebaseService.resetGame(games)}>Reset</button>
       <button onClick={() => rotateGame()}>Next</button>
-      {currentGame && gameState == 0 && (
+      {currentGame != null && gameState == 0 && (
         <div>
           <div className="topbar">
             <div className="round-info">
