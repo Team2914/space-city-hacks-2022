@@ -36,8 +36,6 @@ const realtime = getDatabase();
 const gamesRef = collection(db, "games");
 const onlineRef = collection(db, "online");
 
-const NUM_ROUNDS = 6;
-
 export const authenticateAnonymously = () => {
   return signInAnonymously(getAuth(app));
 };

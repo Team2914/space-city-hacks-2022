@@ -288,7 +288,7 @@ const Game = () => {
             return (
               <div className="end-screen-path">
                 {combineCodeAndPrompts(g.code, g.prompts).map((item, index) => {
-                  if (item.type == 0) {
+                  if (item.type === 0) {
                     return <h5 className="center">{item.text}</h5>;
                   } else {
                     return (
