@@ -1,6 +1,9 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
 $blue_light: #83d0Cb;
 $blue: #14213d;
-$gray: #e5e5e5;
+$bg: #fff;
+$bg2: #e5e5e5;
 $orange: #fca312;
 
 
@@ -9,10 +12,11 @@ $orange: #fca312;
     margin: 0;
     box-sizing: border-box;
     overflow-x: hidden;
+    font-family: 'Fira Code', monospace;
 }
 
 body {
-    background-color: $gray;
+    background-color: $bg;
     height: 100%;
     width: 100%;
 }
@@ -58,7 +62,6 @@ button:hover {
 .title {
     text-align: center;
     justify-content: center;
-    text-shadow: 3px 3px #83d0Cb40;
 }
 
 .center {

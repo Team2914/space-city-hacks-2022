@@ -1,29 +1,37 @@
 import React from "react";
-import "./scss/Home.scss"
+import { Link } from "react-router-dom";
+import "./scss/Home.scss";
+import code from "./assets/code.svg";
+import bubbles from "./assets/bubbles.svg";
 
 const Home = () => {
   return (
-    <dl>
-      <dl id="join-con">
-        <dl className="title-con">
+    <div>
+      <div id="join-con">
+        <img src={code} alt="" id="code-img"/>
+        <div className="title-con">
           <h1 id="home-title" className="title">Telecode</h1>
-        </dl>
-        <dl className="center">
-          <button id="join-btn">
-            <h3>Join</h3>
-          </button>
-        </dl>
-      </dl>
-      <dl className="center">
-        <h2>How To Play</h2>
-      </dl>
-      <dl className="main flex-con">
-        <dl className="flex-item" id="instructions">
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Exercitationem illo, modi ipsam libero expedita facere itaque molestiae quod explicabo incidunt et! Nam tenetur unde inventore nemo, itaque eos repudiandae ipsam!</p>
-        </dl>
-        <p className="flex-item">[Some image]</p>
-      </dl>
-    </dl>
+        </div>
+        <div className="center">
+          <div id="join-btn">
+            <Link to="/play" id="join-btn-text">
+              Join
+            </Link>
+          </div>
+        </div>
+      </div>
+      <div id="lower">
+        <div className="center">
+          <h2>How To Play</h2>
+        </div>
+        <div className="main flex-con">
+          <div className="flex-item" id="instructions">
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Exercitationem illo, modi ipsam libero expedita facere itaque molestiae quod explicabo incidunt et! Nam tenetur unde inventore nemo, itaque eos repudiandae ipsam!</p>
+          </div>
+          <img src={bubbles} alt="" id="bubbles-img" className="flex-item"/>
+        </div>
+      </div>
+    </div>
   );
 };
 
