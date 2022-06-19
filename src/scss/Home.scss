@@ -63,22 +63,23 @@
 }
 #bubbles-img {
     height: 17em;
+    margin-top: 15vh;
     max-width: 30em;
     margin-right: 15em;
     float: right;
     transform: translateX(calc(-33vw + 30em));
+    // @media screen and (max-width: 1300px) {
+    //     margin-top: 10rem;
+    //     transform: translateX(50%);
+    //     margin-right: 50vw;
+    // }
     @media screen and (max-width: 1300px) {
-        margin-top: 10rem;
-        transform: translateX(50%);
-        margin-right: 50vw;
-        // float: center;
-        // margin-right: 0;
+        display: none;
     }
 }
 
 .main {
-    // padding: 5rem;
-    margin-top: 10rem;
+    margin-top: 5rem;
 }
 
 #lower {
