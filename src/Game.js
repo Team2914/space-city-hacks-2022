@@ -259,8 +259,8 @@ const Game = () => {
               </h5>
               {updating && <h5>Loading...</h5>}
               <h5 id="timer" className="flex-item">
-                Time left: {Math.floor(timeLeft / 60)}:
-                {Math.max(Math.round((timeLeft % 60) * 100) / 100, 0)}s
+                Time left: {Math.max(Math.floor(timeLeft / 60), 0)}:
+                {(timeLeft % 60 >= 10 ? "0" : "") + Math.max(Math.round((timeLeft % 60)), 0)}s
               </h5>
               {/*<button id="done" className="flex-item shaded-button">
                 <h5>Done!</h5>
