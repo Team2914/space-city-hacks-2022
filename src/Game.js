@@ -187,7 +187,7 @@ const Game = () => {
         {currentGame != null && gameState == 0 && (
           <div className="status-panel">
             <h5 id="round" className="flex-item">Round: {currentGame.rounds[0].index + 1}</h5>
-            <h5 id="timer" className="flex-item">Time left: {timeLeft}s</h5>
+            <h5 id="timer" className="flex-item">Time left: {timeLeft.toPrecision(2)}s</h5>
             <button id="done" className="flex-item shaded-button">
               <h5>Done!</h5>
             </button>
