@@ -224,12 +224,11 @@ const Game = () => {
                   fontSize: 12,
                   border: "1px solid #e5e5e5",
                   background: "#e5e5e5",
-                  minHeight: "250px",
                 }}
               />
-              {/*<textarea
+              <textarea
                 value={code}
-                onChange={(code) => setCode(code)}
+                onChange={(event) => {setCode(event.target.value)}}
                 padding={10}
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
@@ -237,8 +236,9 @@ const Game = () => {
                   border: "1px solid #e5e5e5",
                   background: "#e5e5e5",
                   minHeight: "250px",
+                  width: "100%",
                 }}
-            />*/}
+            />
             </div>
           )}
           {currentGame != null && gameState === 0 && (
