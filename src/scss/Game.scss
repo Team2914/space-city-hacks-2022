@@ -4,6 +4,7 @@
 .game-con {
     border-radius: 10px;
     background: #fff;
+    height: calc(100vh - 40px);
 }
 
 .prompt-con {
@@ -18,7 +19,7 @@
 .prompt {
     align-self: center;
 }
-    
+
 .end-screen, .end-screen-path {
     padding: 20px;    
     border-radius: 5px;
@@ -48,6 +49,7 @@
 #editor-input {
     border-radius: 10px;
     margin: 0 20px;
+    height: calc(100vw - 6rem - 80px);
 }
 
 #describe-input {
