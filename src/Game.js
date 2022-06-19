@@ -13,6 +13,9 @@ const Game = () => {
   const [gameState, setGameState] = useState();
   const [currentGame, setCurrentGame] = useState(null);
 
+  const NUM_ROUNDS = 6;
+  const ROUND_TIME = 10 * 1000;
+
   useEffect(() => {
     FirebaseService.authenticateAnonymously().then((userCredentials) => {
       setUser(userCredentials.user);
@@ -51,6 +54,7 @@ const Game = () => {
 
   useEffect(() => {
     if (userData) {
+      console.log("userData game idx: " + userData.game);
       setCurrentGame(games.find((g) => g.id === userData.game));
     }
   }, [userData, games]);
@@ -68,9 +72,18 @@ const Game = () => {
   const onCreateGame = () => {
     setCreating(true);
     let onlineUsers = [...online];
+    let startTime = Date.now() + 15 * 1000;
+    let rounds = [];
+    for (let i = 0; i < NUM_ROUNDS; i++) {
+      let round = { start: startTime, end: startTime + ROUND_TIME, index: i };
+      rounds.push(round);
+      startTime += ROUND_TIME + 3 * 1000;
+    }
+    console.log(JSON.stringify(rounds));
     let gamePromises = onlineUsers.map((u, i) =>
-      FirebaseService.createGame(onlineUsers, i)
+      FirebaseService.createGame(onlineUsers, i, rounds)
     );
+
     Promise.all(gamePromises).then((gs) => {
       let userPromises = gs.map((g, i) =>
         FirebaseService.setUserGame(onlineUsers[i], g.id)
@@ -80,21 +93,27 @@ const Game = () => {
   };
 
   const rotateGame = () => {
-    var updatedGames = [];
-    var updatedUserAssigments = [];
-    games.forEach((g) => {
-      g.index = (g.index + 1) % games.length;
-      updatedUserAssigments.push({ user: g.players[g.index], game: g.id });
-      updatedGames.push(g);
-    });
+    var rounds = currentGame.rounds;
+    rounds.splice(0, 1);
+    var updatedGame = {
+      ...currentGame,
+      index: (currentGame.index + 1) % games.length,
+      rounds: rounds,
+    };
 
-    let gamePromises = updatedGames.map((g) =>
-      FirebaseService.updateGame(g.id, g)
-    );
-    let userPromises = updatedUserAssigments.map((u) =>
-      FirebaseService.setUserGame(u.user, u.game)
-    );
-    Promise.all([gamePromises, userPromises]);
+    var newGameIndex = (currentGame.index - 1) % games.length;
+    if (newGameIndex < 0) {
+      newGameIndex = games.length - 1;
+    }
+    console.log("user index: " + newGameIndex);
+    var updatedUser = {
+      game: games[newGameIndex].id,
+    };
+
+    Promise.all([
+      FirebaseService.updateGame(updatedGame.id, updatedGame),
+      FirebaseService.setUserGame(user.uid, updatedUser.game),
+    ]);
   };
 
   const addPrompt = (prompt) => {
@@ -121,19 +140,20 @@ const Game = () => {
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
       )}
       <button onClick={() => rotateGame()}>Next</button>
-
-      <div>
-        <div className="topbar">
-          <div className="round-info">
-            <h5>Round 1</h5>
-            <h5>0:30</h5>
-          </div>
-          <div className="prompt">
-            <h4>You have to code:</h4>
-            <h3>test</h3>
+      {currentGame && gameState == 0 && (
+        <div>
+          <div className="topbar">
+            <div className="round-info">
+              <h5>Round {currentGame.rounds[0].index + 1}</h5>
+              <h5>0:30</h5>
+            </div>
+            <div className="prompt">
+              <h4>You have to code:</h4>
+              <h3>test</h3>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

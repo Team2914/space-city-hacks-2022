@@ -41,15 +41,17 @@ const realtime = getDatabase();
 const gamesRef = collection(db, "games");
 const onlineRef = collection(db, "online");
 
+const NUM_ROUNDS = 6;
+
 export const authenticateAnonymously = () => {
   return signInAnonymously(getAuth(app));
 };
 
 export const online = (uid) => {
   return onDisconnect(ref(realtime, "users/" + uid))
-    .set({ online: false })
+    .update({ online: false })
     .then(() =>
-      set(ref(realtime, "users/" + uid), {
+      update(ref(realtime, "users/" + uid), {
         online: true,
       })
     );
@@ -77,9 +79,16 @@ export const getOnline = (callback) => {
   });
 };
 
-export const createGame = (players, i) => {
+export const createGame = (players, i, rounds) => {
   let prompt = "Fake Prompt To Be Replaced"; //will be replaced with actual prompt generator
-  return addDoc(gamesRef, { prompts: [prompt], code: [], players, index: i });
+
+  return addDoc(gamesRef, {
+    prompts: [prompt],
+    code: [],
+    players,
+    index: i,
+    rounds,
+  });
 };
 
 export const setUserGame = (uid, gameID) => {
