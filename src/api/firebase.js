@@ -25,6 +25,7 @@ import {
   update,
 } from "firebase/database";
 import { getAuth, signInAnonymously } from "firebase/auth";
+import { getPrompt } from "./prompt";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDryRbxD236gxgz3nhJxpb7YuSBnTQbYNk",
@@ -80,7 +81,7 @@ export const getOnline = (callback) => {
 };
 
 export const createGame = (players, i, rounds) => {
-  let prompt = "Fake Prompt To Be Replaced"; //will be replaced with actual prompt generator
+  let prompt = getPrompt(); //will be replaced with actual prompt generator
 
   return addDoc(gamesRef, {
     prompts: [prompt],
