@@ -71,7 +71,7 @@ const Game = () => {
 
   useEffect(() => {
     if (currentGame) {
-      if (currentGame.prompts.length >= currentGame.code.length) {
+      if (currentGame.prompts.length > currentGame.code.length) {
         setGameState(0);
       } else {
         setGameState(1);
@@ -248,7 +248,7 @@ const Game = () => {
               </h5>
               <h5 id="timer" className="flex-item">
                 Time left: {Math.floor(timeLeft / 60)}:
-                {(timeLeft % 60).toPrecision(2)}s
+                {Math.max([(timeLeft % 60).toPrecision(2), 0])}s
               </h5>
               {/*<button id="done" className="flex-item shaded-button">
                 <h5>Done!</h5>
