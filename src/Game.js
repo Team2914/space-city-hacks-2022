@@ -191,7 +191,7 @@ const Game = () => {
           {gameState === 0 && !updating && (
             <div>
               <div className="prompt-con">
-                <h4 className="center bold">You have to code:</h4>
+                <h4 className="center bold">Your prompt is:</h4>
                 <h5 className="center">
                   {currentGame.prompts[currentGame.prompts.length - 1]}
                 </h5>
@@ -290,7 +290,7 @@ const Game = () => {
           .map((g) => {
             return (
               <div>
-                <h3 className="center">Prompt: {g.index + 1}</h3>
+                <h3 className="center">Prompt {g.index + 1}</h3>
                 <div className="end-screen-path flex-con">
                   {combineCodeAndPrompts(g.code, g.prompts).map(
                     (item, index) => {
