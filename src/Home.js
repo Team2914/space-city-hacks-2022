@@ -24,11 +24,11 @@ const Home = () => {
         <div className="center">
           <h2>How To Play</h2>
         </div>
-        <div className="main flex-con">
-          <div className="flex-item" id="instructions">
+        <div className="main">
+          <div id="instructions">
             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Exercitationem illo, modi ipsam libero expedita facere itaque molestiae quod explicabo incidunt et! Nam tenetur unde inventore nemo, itaque eos repudiandae ipsam!</p>
           </div>
-          <img src={bubbles} alt="" id="bubbles-img" className="flex-item"/>
+          <img src={bubbles} alt="" id="bubbles-img"/>
         </div>
       </div>
     </div>
