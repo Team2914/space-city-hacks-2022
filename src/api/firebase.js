@@ -109,3 +109,9 @@ export const updateGame = (id, data) => {
   delete data.id;
   return updateDoc(doc(gamesRef, id), data);
 };
+
+export const resetGame = (games) => {
+  let promises = games.map(x => deleteDoc(doc(gamesRef, x.id)));
+
+  return Promise.all(promises);
+}
