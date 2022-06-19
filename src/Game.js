@@ -186,15 +186,6 @@ const Game = () => {
 
   return (
     <div className="main gradient-2">
-      <a href="/">test</a>
-
-      {creating && <p>creating...</p>}
-      {currentGame != null && gameState === 1 && (
-        <p>{currentGame.code[currentGame.code.length - 1]}</p>
-      )}
-      <button onClick={() => FirebaseService.resetGame(games)}>Reset</button>
-      <button onClick={() => rotateGame()}>Next</button>
-
       {currentGame != null && (
         <div className="game-con">
           {gameState === 0 && !updating && (
