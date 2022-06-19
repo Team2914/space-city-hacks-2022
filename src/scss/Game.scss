@@ -19,12 +19,28 @@
     align-self: center;
 }
 
-.end-screen {
-    background-color: $blue_light;
+.end-screen, .end-screen-path {
+    padding: 20px;    
     border-radius: 5px;
 }
 
 .end-screen-path {
-    background-color: #fff;
+    overflow: auto;
+    // width: 100%;
+}
+
+.end-screen {
+    background: $bg;
+}
+
+
+.card {
+    background: #fff;
+    width: 800px;
+    overflow: scroll;
+    margin: 5px;
+    min-width: 400px;
+    box-shadow: 2px 2px 5px #00000020;
+    padding: 5px;
     border-radius: 5px;
 }

@@ -282,33 +282,39 @@ const Game = () => {
       )}
 
       <div className="end-screen">
+        <h2 className="center gradient-text">Results</h2>
         {games
           .filter((g) => g.rounds.length === 0)
           .map((g) => {
             return (
-              <div className="end-screen-path">
-                {combineCodeAndPrompts(g.code, g.prompts).map((item, index) => {
-                  if (item.type == 0) {
-                    return <h5 className="center">{item.text}</h5>;
-                  } else {
-                    return (
-                      <Editor
-                        value={item.text}
-                        contentEditable={false}
-                        highlight={(code) => highlight(code, languages.js)}
-                        padding={10}
-                        id="editor"
-                        style={{
-                          fontFamily: '"Fira code", "Fira Mono", monospace',
-                          fontSize: 12,
-                          border: "1px solid #e5e5e5",
-                          background: "#e5e5e5",
-                          margin: "1rem",
-                        }}
-                      />
-                    );
-                  }
-                })}
+              <div>
+                <h3 className="center">Prompt: {g.index + 1}</h3>
+                <div className="end-screen-path flex-con">
+                  {combineCodeAndPrompts(g.code, g.prompts).map((item, index) => {
+                    if (item.type == 0) {
+                    return <div className="card"><h5 className="flex-item center">{item.text}</h5></div>;
+                    } else {
+                      return (
+                        <div className="card">
+                          <Editor
+                            value={item.text}
+                            contentEditable={false}
+                            highlight={(code) => highlight(code, languages.js)}
+                            padding={10}
+                            id="editor"
+                            style={{
+                              fontFamily: '"Fira code", "Fira Mono", monospace',
+                              fontSize: 12,
+                              border: "1px solid #e5e5e5",
+                              background: "#f7f7f7",
+                              margin: "1rem",
+                            }}
+                          />
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
               </div>
             );
           })}
