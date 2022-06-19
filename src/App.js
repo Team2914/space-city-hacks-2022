@@ -8,7 +8,6 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/play" element={<Game />} />
-      <Route path="/signin" element={<Signin />} />
     </Routes>
   );
 }
