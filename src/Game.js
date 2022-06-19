@@ -24,7 +24,7 @@ const Game = () => {
   const [updating, setUpdating] = useState(false);
 
   const NUM_ROUNDS = 6;
-  const ROUND_TIME = 10 * 1000;
+  const ROUND_TIME = 180 * 1000;
 
   useEffect(() => {
     FirebaseService.authenticateAnonymously().then((userCredentials) => {
@@ -112,9 +112,10 @@ const Game = () => {
     }
     var updatedGame = {
       ...currentGame,
-      index: (currentGame.index + 1) % games.length,
       rounds: rounds,
     };
+
+    console.log(`${currentGame.index} ${updatedGame.index}`);
 
     console.log("code: " + code);
     if (gameState === 0) {
@@ -230,7 +231,9 @@ const Game = () => {
               />
               <textarea
                 value={code}
-                onChange={(event) => {setCode(event.target.value)}}
+                onChange={(event) => {
+                  setCode(event.target.value);
+                }}
                 padding={10}
                 id="describe-input"
                 style={{
@@ -243,7 +246,7 @@ const Game = () => {
                   margin: "1rem",
                 }}
                 placeholder="Describe the code..."
-            />
+              />
             </div>
           )}
           {currentGame != null && gameState === 0 && (
