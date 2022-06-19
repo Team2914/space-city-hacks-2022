@@ -201,6 +201,7 @@ const Game = () => {
                 onValueChange={(code) => setCode(code)}
                 highlight={(code) => highlight(code, languages.js)}
                 padding={10}
+                id="editor-input"
                 placeholder="// place your code here"
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
