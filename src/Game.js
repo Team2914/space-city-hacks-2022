@@ -151,11 +151,6 @@ const Game = () => {
     }
   }, [currentGame])
 
-
-  useEffect(() => {
-    
-  }, [timeLeft, currentGame])
-
   return (
     <div className="main gradient-2">
       <a href="/">test</a>
@@ -171,20 +166,6 @@ const Game = () => {
       )}
       <button onClick={() => FirebaseService.resetGame(games)}>Reset</button>
       <button onClick={() => rotateGame()}>Next</button>
-      {currentGame != null && gameState == 0 && (
-        <div>
-          <div className="topbar">
-            <div className="round-info">
-              <h5>Round {currentGame.rounds[0].index + 1}</h5>
-              <h5>{timeLeft}</h5>
-            </div>
-            <div className="prompt">
-              <h4>You have to code:</h4>
-              <h3>test</h3>
-            </div>
-          </div>
-        </div>
-      )}
       <div className="game-con">
         <div className="prompt-con">
             <h4 className="center bold">You have to code:</h4>
@@ -203,13 +184,15 @@ const Game = () => {
             minHeight: '250px'
           }}
         />
-        <div className="status-panel">
-          <h5 id="round" className="flex-item">Round 1</h5>
-          <h5 id="timer" className="flex-item">Time left: 0:30s</h5>
-          <button id="done" className="flex-item shaded-button">
-            <h5>Done!</h5>
-          </button>
-        </div>
+        {currentGame != null && gameState == 0 && (
+          <div className="status-panel">
+            <h5 id="round" className="flex-item">Round: {currentGame.rounds[0].index + 1}</h5>
+            <h5 id="timer" className="flex-item">Time left: {timeLeft}s</h5>
+            <button id="done" className="flex-item shaded-button">
+              <h5>Done!</h5>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
