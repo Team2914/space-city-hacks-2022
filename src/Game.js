@@ -83,8 +83,9 @@ const Game = () => {
     }
   }, [currentGame]);
 
-  const onCreateGame = () => {
+  const onCreateGame = async () => {
     setCreating(true);
+    await FirebaseService.resetGame(games);
     let onlineUsers = [...online];
     let startTime = Date.now() + 0 * 1000;
     let rounds = [];
@@ -97,7 +98,6 @@ const Game = () => {
     let gamePromises = onlineUsers.map((u, i) =>
       FirebaseService.createGame(onlineUsers, i, rounds)
     );
-
     Promise.all(gamePromises).then((gs) => {
       let userPromises = gs.map((g, i) =>
         FirebaseService.setUserGame(onlineUsers[i], g.id)
@@ -187,9 +187,7 @@ const Game = () => {
   return (
     <div className="main gradient-2">
       <a href="/">test</a>
-      {!loading && games.length === 0 && (
-        <button onClick={() => onCreateGame()}>Create Game</button>
-      )}
+
       {creating && <p>creating...</p>}
       {currentGame != null && gameState === 1 && (
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
@@ -282,7 +280,19 @@ const Game = () => {
       )}
 
       <div className="end-screen">
-        <h2 className="center gradient-text">Results</h2>
+        {!loading &&
+          (games.filter((g) => g.rounds.length === 0).length > 0 ||
+            games.length === 0) && (
+            <button onClick={() => onCreateGame()}>Create Game</button>
+          )}
+        {games.filter((g) => g.rounds.length === 0).length === 0 &&
+          games.length > 0 &&
+          currentGame == null && (
+            <h2 className="center gradient-text">Game In Progress</h2>
+          )}
+        {games.filter((g) => g.rounds.length === 0).length > 0 && (
+          <h2 className="center gradient-text">Results</h2>
+        )}
         {games
           .filter((g) => g.rounds.length === 0)
           .map((g) => {
@@ -290,30 +300,39 @@ const Game = () => {
               <div>
                 <h3 className="center">Prompt: {g.index + 1}</h3>
                 <div className="end-screen-path flex-con">
-                  {combineCodeAndPrompts(g.code, g.prompts).map((item, index) => {
-                    if (item.type == 0) {
-                    return <div className="card"><h5 className="flex-item center">{item.text}</h5></div>;
-                    } else {
-                      return (
-                        <div className="card">
-                          <Editor
-                            value={item.text}
-                            contentEditable={false}
-                            highlight={(code) => highlight(code, languages.js)}
-                            padding={10}
-                            id="editor"
-                            style={{
-                              fontFamily: '"Fira code", "Fira Mono", monospace',
-                              fontSize: 12,
-                              border: "1px solid #e5e5e5",
-                              background: "#f7f7f7",
-                              margin: "1rem",
-                            }}
-                          />
-                        </div>
-                      );
+                  {combineCodeAndPrompts(g.code, g.prompts).map(
+                    (item, index) => {
+                      if (item.type == 0) {
+                        return (
+                          <div className="card">
+                            <h5 className="flex-item center">{item.text}</h5>
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div className="card">
+                            <Editor
+                              value={item.text}
+                              contentEditable={false}
+                              highlight={(code) =>
+                                highlight(code, languages.js)
+                              }
+                              padding={10}
+                              id="editor"
+                              style={{
+                                fontFamily:
+                                  '"Fira code", "Fira Mono", monospace',
+                                fontSize: 12,
+                                border: "1px solid #e5e5e5",
+                                background: "#f7f7f7",
+                                margin: "1rem",
+                              }}
+                            />
+                          </div>
+                        );
+                      }
                     }
-                  })}
+                  )}
                 </div>
               </div>
             );
