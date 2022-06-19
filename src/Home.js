@@ -21,12 +21,16 @@ const Home = () => {
         </div>
       </div>
       <div id="lower">
-        <div className="center">
-          <h2>How To Play</h2>
-        </div>
         <div className="main">
           <div id="instructions">
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Exercitationem illo, modi ipsam libero expedita facere itaque molestiae quod explicabo incidunt et! Nam tenetur unde inventore nemo, itaque eos repudiandae ipsam!</p>
+            <h2>How To Play</h2>
+            <p>
+              Telecode is a game where every player will start out with a prompt,
+              and have 3 minuets to code a solution to the prompt.<br/><br/> After the 3 minuets have elapsed, you will
+              get 3 minuets to describe someone else's code.<br/><br/> At the end of a few of these rounds you can see 
+              a map of all the prompts, the paths they took, and all the interesting ways the code got distorted 
+              down the line!
+            </p>
           </div>
           <img src={bubbles} alt="" id="bubbles-img"/>
         </div>
