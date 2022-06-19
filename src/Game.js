@@ -199,9 +199,11 @@ const Game = () => {
               <div className="prompt-con">
                 <h4 className="center bold">You have to describe:</h4>
               </div>
-              <textarea
-                value={code}
-                onChange={(code) => setCode(code)}
+
+              <Editor
+                value={currentGame.code[currentGame.code.length - 1]}
+                contentEditable={false}
+                highlight={(code) => highlight(code, languages.js)}
                 padding={10}
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
@@ -211,10 +213,9 @@ const Game = () => {
                   minHeight: "250px",
                 }}
               />
-              <Editor
-                value={currentGame.code[currentGame.code.length - 1]}
-                contentEditable={false}
-                highlight={(code) => highlight(code, languages.js)}
+              <textarea
+                value={code}
+                onChange={(code) => setCode(code)}
                 padding={10}
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
