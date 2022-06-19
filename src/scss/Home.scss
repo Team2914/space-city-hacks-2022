@@ -1,11 +1,13 @@
 @import './Main.scss';
 
 
+body {
+    height: 100vh;
+    width: 100vw;
+}
+
 #join-con {
     height: 50vh;
-    background-image: linear-gradient(to right, $blue, $blue_light 95%);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
 }
 
 #home-title, #join-btn {

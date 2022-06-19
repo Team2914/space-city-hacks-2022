@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import * as FirebaseService from "./api/firebase";
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/themes/prism.css';
 import "./scss/Game.scss";
+import { SAMLAuthProvider } from "@firebase/auth";
 
 const Game = () => {
   const [loading, setLoading] = useState(true);
@@ -96,11 +102,12 @@ const Game = () => {
     Promise.all([gamePromises, userPromises]);
   };
 
+  // default code
+  const [code, setCode] = React.useState(`// place your code here\n`);
+
   return (
-    <div>
+    <div className="main gradient-2">
       <a href="/">test</a>
-      <p>{online.length} users online</p>
-      <p>{games.length} games</p>
       {!loading && games.length == 0 && (
         <button onClick={() => onCreateGame()}>Create Game</button>
       )}
@@ -112,27 +119,32 @@ const Game = () => {
         <p>{currentGame.code[currentGame.code.length - 1]}</p>
       )}
       <button onClick={() => rotateGames()}>Next</button>
-
-      <div>
-      <div className="topbar">
-        <div className="round-info">
-          <h5>
-            Round 1
-          </h5>
-          <h5>
-            0:30
-          </h5>
+      <div className="game-con">
+        <div className="prompt-con">
+            <h4 className="center bold">You have to code:</h4>
+            <h5 className="center">Something super cool and amazing</h5>
         </div>
-        <div className="prompt">
-          <h4>
-            You have to code:
-          </h4>
-          <h3>
-            test
-          </h3>
+        <Editor
+          value={code}
+          onValueChange={code => setCode(code)}
+          highlight={code => highlight(code, languages.js)}
+          padding={10}
+          style={{
+            fontFamily: '"Fira code", "Fira Mono", monospace',
+            fontSize: 12,
+            border: '1px solid #e5e5e5',
+            background: '#e5e5e5',
+            minHeight: '250px'
+          }}
+        />
+        <div className="status-panel">
+          <h5 id="round" className="flex-item">Round 1</h5>
+          <h5 id="timer" className="flex-item">Time left: 0:30s</h5>
+          <button id="done" className="flex-item shaded-button">
+            <h5>Done!</h5>
+          </button>
         </div>
       </div>
-    </div>
     </div>
   );
 };
