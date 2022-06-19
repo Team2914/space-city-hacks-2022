@@ -15,7 +15,15 @@ import {
   deleteDoc,
   setDoc,
 } from "firebase/firestore";
-import { get, getDatabase, onDisconnect, ref, set } from "firebase/database";
+import {
+  get,
+  getDatabase,
+  onDisconnect,
+  onValue,
+  ref,
+  set,
+  update,
+} from "firebase/database";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
 const firebaseConfig = {
@@ -51,24 +59,44 @@ export const setUserOnline = (uid) => {
   return setDoc(doc(onlineRef, uid), { timeStamp: serverTimestamp() });
 };
 
-export const getOnline = () => {
-  return new Promise((resolve, reject) => {
-    get(ref(realtime, "users")).then((snapshot) => {
-      if (snapshot.exists) {
-        let snap = snapshot.val();
-        let users = Object.keys(snap);
-        resolve(users.filter((i) => snap[i].online));
-      }
-      resolve([]);
-    });
+export const trackUser = (uid, callback) => {
+  return onValue(ref(realtime, "users/" + uid), (snapshot) => {
+    callback(snapshot.val());
   });
 };
 
-export const createGame = () => {
-  //return set
+export const getOnline = (callback) => {
+  return onValue(ref(realtime, "users"), (snapshot) => {
+    if (snapshot.exists) {
+      let snap = snapshot.val();
+      let users = Object.keys(snap);
+      callback(users.filter((i) => snap[i].online));
+    } else {
+      callback([]);
+    }
+  });
+};
+
+export const createGame = (players, i) => {
+  let prompt = "Fake Prompt To Be Replaced"; //will be replaced with actual prompt generator
+  return addDoc(gamesRef, { prompts: [prompt], code: [], players, index: i });
+};
+
+export const setUserGame = (uid, gameID) => {
+  return update(ref(realtime, "users/" + uid), { game: gameID });
+};
+
+export const setUsersGame = (uids, gameID) => {
+  let promises = uids.map((uid) => setUserGame(uid, gameID));
+  return Promise.all(promises);
 };
 
 export const getGameListener = (callback) => {
   const q = query(gamesRef);
   return onSnapshot(q, callback);
+};
+
+export const updateGame = (id, data) => {
+  delete data.id;
+  return updateDoc(doc(gamesRef, id), data);
 };
