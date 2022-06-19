@@ -49,7 +49,7 @@
 #editor-input {
     border-radius: 10px;
     margin: 0 20px;
-    height: calc(100vw - 6rem - 80px);
+    height: calc(100vh - 6rem - 80px);
 }
 
 #describe-input {
@@ -57,4 +57,9 @@
     margin: 0 20px;
     padding: 5px;
     width: calc(100% - 35px);
+    height: calc(100vh - 9rem - 130px);
+}
+
+#editor-display {
+    border-radius: 10px;
 }

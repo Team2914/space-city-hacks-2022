@@ -224,7 +224,7 @@ const Game = () => {
                 contentEditable={false}
                 highlight={(code) => highlight(code, languages.js)}
                 padding={10}
-                id="editor"
+                id="editor-display"
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
                   fontSize: 12,
