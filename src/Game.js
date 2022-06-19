@@ -281,7 +281,7 @@ const Game = () => {
           {!loading &&
             (games.filter((g) => g.rounds.length === 0).length > 0 ||
               games.length === 0) && (
-              <button onClick={() => onCreateGame()}>Create Game</button>
+              <button onClick={() => onCreateGame()} id="create-game-btn" className="gradient-text">Create Game with {online.length} players</button>
             )}
           {games.filter((g) => g.rounds.length === 0).length === 0 &&
             games.length > 0 &&
