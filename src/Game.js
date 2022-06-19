@@ -184,7 +184,7 @@ const Game = () => {
             </div>
           </div>
         </div>
-      }
+      )}
       <div className="game-con">
         <div className="prompt-con">
             <h4 className="center bold">You have to code:</h4>
