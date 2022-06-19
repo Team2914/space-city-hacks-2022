@@ -83,8 +83,9 @@ const Game = () => {
     }
   }, [currentGame]);
 
-  const onCreateGame = () => {
+  const onCreateGame = async () => {
     setCreating(true);
+    await FirebaseService.resetGame(games);
     let onlineUsers = [...online];
     let startTime = Date.now() + 0 * 1000;
     let rounds = [];
@@ -97,7 +98,6 @@ const Game = () => {
     let gamePromises = onlineUsers.map((u, i) =>
       FirebaseService.createGame(onlineUsers, i, rounds)
     );
-
     Promise.all(gamePromises).then((gs) => {
       let userPromises = gs.map((g, i) =>
         FirebaseService.setUserGame(onlineUsers[i], g.id)
@@ -143,6 +143,7 @@ const Game = () => {
     ]).then(() => {
       setCode("");
       setUpdating(false);
+      setUpdate(false);
     });
   };
 
@@ -168,7 +169,6 @@ const Game = () => {
   useEffect(() => {
     if (update) {
       rotateGame();
-      setUpdate(false);
     }
   }, [update]);
 
@@ -186,23 +186,12 @@ const Game = () => {
 
   return (
     <div className="main gradient-2">
-      <a href="/">test</a>
-      {!loading && games.length === 0 && (
-        <button onClick={() => onCreateGame()}>Create Game</button>
-      )}
-      {creating && <p>creating...</p>}
-      {currentGame != null && gameState === 1 && (
-        <p>{currentGame.code[currentGame.code.length - 1]}</p>
-      )}
-      <button onClick={() => FirebaseService.resetGame(games)}>Reset</button>
-      <button onClick={() => rotateGame()}>Next</button>
-
       {currentGame != null && (
         <div className="game-con">
           {gameState === 0 && !updating && (
             <div>
               <div className="prompt-con">
-                <h4 className="center bold">You have to code:</h4>
+                <h4 className="center bold">Your prompt is:</h4>
                 <h5 className="center">
                   {currentGame.prompts[currentGame.prompts.length - 1]}
                 </h5>
@@ -212,6 +201,7 @@ const Game = () => {
                 onValueChange={(code) => setCode(code)}
                 highlight={(code) => highlight(code, languages.js)}
                 padding={10}
+                id="editor-input"
                 placeholder="// place your code here"
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
@@ -234,7 +224,7 @@ const Game = () => {
                 contentEditable={false}
                 highlight={(code) => highlight(code, languages.js)}
                 padding={10}
-                id="editor"
+                id="editor-display"
                 style={{
                   fontFamily: '"Fira code", "Fira Mono", monospace',
                   fontSize: 12,
@@ -270,8 +260,9 @@ const Game = () => {
               </h5>
               {updating && <h5>Loading...</h5>}
               <h5 id="timer" className="flex-item">
-                Time left: {Math.floor(timeLeft / 60)}:
-                {Math.max(Math.round((timeLeft % 60) * 100) / 100, 0)}s
+                Time left: {Math.max(Math.floor(timeLeft / 60), 0)}:
+                {(timeLeft % 60 < 10 ? "0" : "") +
+                  Math.max(Math.round(timeLeft % 60), 0)}
               </h5>
               {/*<button id="done" className="flex-item shaded-button">
                 <h5>Done!</h5>
@@ -281,38 +272,72 @@ const Game = () => {
         </div>
       )}
 
-      <div className="end-screen">
-        {games
-          .filter((g) => g.rounds.length === 0)
-          .map((g) => {
-            return (
-              <div className="end-screen-path">
-                {combineCodeAndPrompts(g.code, g.prompts).map((item, index) => {
-                  if (item.type === 0) {
-                    return <h5 className="center">{item.text}</h5>;
-                  } else {
-                    return (
-                      <Editor
-                        value={item.text}
-                        contentEditable={false}
-                        highlight={(code) => highlight(code, languages.js)}
-                        padding={10}
-                        id="editor"
-                        style={{
-                          fontFamily: '"Fira code", "Fira Mono", monospace',
-                          fontSize: 12,
-                          border: "1px solid #e5e5e5",
-                          background: "#e5e5e5",
-                          margin: "1rem",
-                        }}
-                      />
-                    );
-                  }
-                })}
-              </div>
-            );
-          })}
-      </div>
+      {!(
+        games.filter((g) => g.rounds.length === 0).length === 0 &&
+        games.length > 0 &&
+        currentGame != null
+      ) && (
+        <div className="end-screen">
+          {!loading &&
+            (games.filter((g) => g.rounds.length === 0).length > 0 ||
+              games.length === 0) && (
+              <button onClick={() => onCreateGame()} id="create-game-btn" className="gradient-text">Create Game with {online.length} players</button>
+            )}
+          {loading && (<h3 className="center gradient-text">Loading...</h3>)}
+          {games.filter((g) => g.rounds.length === 0).length === 0 &&
+            games.length > 0 &&
+            currentGame == null && (
+              <h2 className="center gradient-text">Game In Progress</h2>
+            )}
+          {games.filter((g) => g.rounds.length === 0).length > 0 && (
+            <h2 className="center gradient-text">Results</h2>
+          )}
+          {games
+            .filter((g) => g.rounds.length === 0)
+            .map((g) => {
+              return (
+                <div>
+                  <h3 className="center">Prompt {g.index + 1}</h3>
+                  <div className="end-screen-path flex-con">
+                    {combineCodeAndPrompts(g.code, g.prompts).map(
+                      (item, index) => {
+                        if (item.type == 0) {
+                          return (
+                            <div className="card">
+                              <h5 className="flex-item center">{item.text}</h5>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="card">
+                              <Editor
+                                value={item.text}
+                                contentEditable={false}
+                                highlight={(code) =>
+                                  highlight(code, languages.js)
+                                }
+                                padding={10}
+                                id="editor"
+                                style={{
+                                  fontFamily:
+                                    '"Fira code", "Fira Mono", monospace',
+                                  fontSize: 12,
+                                  border: "1px solid #e5e5e5",
+                                  background: "#f7f7f7",
+                                  margin: "1rem",
+                                }}
+                              />
+                            </div>
+                          );
+                        }
+                      }
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      )}
     </div>
   );
 };

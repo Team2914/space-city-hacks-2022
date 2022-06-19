@@ -4,6 +4,7 @@
 .game-con {
     border-radius: 10px;
     background: #fff;
+    height: calc(100vh - 40px);
 }
 
 .prompt-con {
@@ -19,12 +20,50 @@
     align-self: center;
 }
 
-.end-screen {
-    background-color: $blue_light;
+.end-screen, .end-screen-path {
+    padding: 20px;    
     border-radius: 5px;
 }
 
 .end-screen-path {
-    background-color: #fff;
+    overflow: auto;
+    // width: 100%;
+}
+
+.end-screen {
+    background: $bg;
+}
+
+
+.card {
+    background: #fff;
+    width: 800px;
+    overflow: scroll;
+    margin: 5px;
+    min-width: 400px;
+    box-shadow: 2px 2px 5px #00000020;
+    padding: 5px;
     border-radius: 5px;
+}
+
+#editor-input {
+    border-radius: 10px;
+    margin: 0 20px;
+    height: calc(100vh - 6rem - 80px);
+}
+
+#describe-input {
+    border-radius: 10px;
+    margin: 0 20px;
+    padding: 5px;
+    width: calc(100% - 35px);
+    height: calc(100vh - 9rem - 130px);
+}
+
+#editor-display {
+    border-radius: 10px;
+}
+
+#create-game-btn {
+    font-size: 3rem;
 }
