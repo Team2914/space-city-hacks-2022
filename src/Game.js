@@ -24,7 +24,7 @@ const Game = () => {
   const [updating, setUpdating] = useState(false);
 
   const NUM_ROUNDS = 6;
-  const ROUND_TIME = 180 * 1000;
+  const ROUND_TIME = 15 * 1000;
 
   useEffect(() => {
     FirebaseService.authenticateAnonymously().then((userCredentials) => {
@@ -126,13 +126,14 @@ const Game = () => {
 
     console.log(JSON.stringify(updatedGame));
 
-    var newGameIndex = (currentGame.index - 1) % games.length;
+    var newGameIndex = currentGame.index - 1;
     if (newGameIndex < 0) {
       newGameIndex = games.length - 1;
     }
+    console.log(`${currentGame.index} idx ${games.length} games`);
     console.log("user index: " + newGameIndex);
     var updatedUser = {
-      game: games[newGameIndex].id,
+      game: games.find((g) => g.index === newGameIndex).id,
     };
 
     Promise.all([
@@ -249,7 +250,7 @@ const Game = () => {
               />
             </div>
           )}
-          {currentGame != null && gameState === 0 && (
+          {currentGame != null && (
             <div className="status-panel">
               <h5 id="round" className="flex-item">
                 Round {/*currentGame.rounds[0].index + 1*/}
