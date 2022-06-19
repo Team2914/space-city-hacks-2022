@@ -2,26 +2,20 @@ import { initializeApp } from "firebase/app";
 import {
   getFirestore,
   query,
-  orderBy,
   onSnapshot,
   collection,
-  getDoc,
-  getDocs,
   addDoc,
   updateDoc,
   doc,
   serverTimestamp,
-  arrayUnion,
   deleteDoc,
   setDoc,
 } from "firebase/firestore";
 import {
-  get,
   getDatabase,
   onDisconnect,
   onValue,
   ref,
-  set,
   update,
 } from "firebase/database";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -112,7 +106,7 @@ export const updateGame = (id, data) => {
 };
 
 export const resetGame = (games) => {
-  let promises = games.map(x => deleteDoc(doc(gamesRef, x.id)));
+  let promises = games.map((x) => deleteDoc(doc(gamesRef, x.id)));
 
   return Promise.all(promises);
-}
+};

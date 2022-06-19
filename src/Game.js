@@ -1,4 +1,3 @@
-import { arrayUnion } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import * as FirebaseService from "./api/firebase";
 import Editor from "react-simple-code-editor";
@@ -112,9 +111,6 @@ const Game = () => {
 
     var rounds = [...currentGame.rounds];
     rounds.splice(0, 1);
-    if (!rounds.length) {
-      return;
-    }
     var updatedGame = {
       ...currentGame,
       rounds: rounds,
@@ -161,13 +157,13 @@ const Game = () => {
 
           setUpdate(true);
         }
-      }, 50);
+      }, 100);
 
       return () => {
         clearInterval(timer);
       };
     }
-  }, [currentGame]);
+  }, [currentGame, code, updating]);
 
   useEffect(() => {
     if (update) {
@@ -270,7 +266,7 @@ const Game = () => {
           {currentGame != null && (
             <div className="status-panel">
               <h5 id="round" className="flex-item">
-                Round {/*currentGame.rounds[0].index + 1*/}
+                Round {currentGame.rounds[0].index + 1}
               </h5>
               {updating && <h5>Loading...</h5>}
               <h5 id="timer" className="flex-item">
@@ -287,7 +283,7 @@ const Game = () => {
 
       <div className="end-screen">
         {games
-          .filter((g) => g.rounds.length == 0)
+          .filter((g) => g.rounds.length === 0)
           .map((g) => {
             return (
               <div className="end-screen-path">
