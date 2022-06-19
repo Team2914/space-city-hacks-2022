@@ -143,6 +143,7 @@ const Game = () => {
     ]).then(() => {
       setCode("");
       setUpdating(false);
+      setUpdate(false);
     });
   };
 
@@ -168,7 +169,6 @@ const Game = () => {
   useEffect(() => {
     if (update) {
       rotateGame();
-      setUpdate(false);
     }
   }, [update]);
 
@@ -261,7 +261,8 @@ const Game = () => {
               {updating && <h5>Loading...</h5>}
               <h5 id="timer" className="flex-item">
                 Time left: {Math.max(Math.floor(timeLeft / 60), 0)}:
-                {(timeLeft % 60 < 10 ? "0" : "") + Math.max(Math.round((timeLeft % 60)), 0)}
+                {(timeLeft % 60 < 10 ? "0" : "") +
+                  Math.max(Math.round(timeLeft % 60), 0)}
               </h5>
               {/*<button id="done" className="flex-item shaded-button">
                 <h5>Done!</h5>
@@ -271,65 +272,71 @@ const Game = () => {
         </div>
       )}
 
-      <div className="end-screen">
-        {!loading &&
-          (games.filter((g) => g.rounds.length === 0).length > 0 ||
-            games.length === 0) && (
-            <button onClick={() => onCreateGame()}>Create Game</button>
+      {!(
+        games.filter((g) => g.rounds.length === 0).length === 0 &&
+        games.length > 0 &&
+        currentGame != null
+      ) && (
+        <div className="end-screen">
+          {!loading &&
+            (games.filter((g) => g.rounds.length === 0).length > 0 ||
+              games.length === 0) && (
+              <button onClick={() => onCreateGame()}>Create Game</button>
+            )}
+          {games.filter((g) => g.rounds.length === 0).length === 0 &&
+            games.length > 0 &&
+            currentGame == null && (
+              <h2 className="center gradient-text">Game In Progress</h2>
+            )}
+          {games.filter((g) => g.rounds.length === 0).length > 0 && (
+            <h2 className="center gradient-text">Results</h2>
           )}
-        {games.filter((g) => g.rounds.length === 0).length === 0 &&
-          games.length > 0 &&
-          currentGame == null && (
-            <h2 className="center gradient-text">Game In Progress</h2>
-          )}
-        {games.filter((g) => g.rounds.length === 0).length > 0 && (
-          <h2 className="center gradient-text">Results</h2>
-        )}
-        {games
-          .filter((g) => g.rounds.length === 0)
-          .map((g) => {
-            return (
-              <div>
-                <h3 className="center">Prompt {g.index + 1}</h3>
-                <div className="end-screen-path flex-con">
-                  {combineCodeAndPrompts(g.code, g.prompts).map(
-                    (item, index) => {
-                      if (item.type == 0) {
-                        return (
-                          <div className="card">
-                            <h5 className="flex-item center">{item.text}</h5>
-                          </div>
-                        );
-                      } else {
-                        return (
-                          <div className="card">
-                            <Editor
-                              value={item.text}
-                              contentEditable={false}
-                              highlight={(code) =>
-                                highlight(code, languages.js)
-                              }
-                              padding={10}
-                              id="editor"
-                              style={{
-                                fontFamily:
-                                  '"Fira code", "Fira Mono", monospace',
-                                fontSize: 12,
-                                border: "1px solid #e5e5e5",
-                                background: "#f7f7f7",
-                                margin: "1rem",
-                              }}
-                            />
-                          </div>
-                        );
+          {games
+            .filter((g) => g.rounds.length === 0)
+            .map((g) => {
+              return (
+                <div>
+                  <h3 className="center">Prompt {g.index + 1}</h3>
+                  <div className="end-screen-path flex-con">
+                    {combineCodeAndPrompts(g.code, g.prompts).map(
+                      (item, index) => {
+                        if (item.type == 0) {
+                          return (
+                            <div className="card">
+                              <h5 className="flex-item center">{item.text}</h5>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="card">
+                              <Editor
+                                value={item.text}
+                                contentEditable={false}
+                                highlight={(code) =>
+                                  highlight(code, languages.js)
+                                }
+                                padding={10}
+                                id="editor"
+                                style={{
+                                  fontFamily:
+                                    '"Fira code", "Fira Mono", monospace',
+                                  fontSize: 12,
+                                  border: "1px solid #e5e5e5",
+                                  background: "#f7f7f7",
+                                  margin: "1rem",
+                                }}
+                              />
+                            </div>
+                          );
+                        }
                       }
-                    }
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-      </div>
+              );
+            })}
+        </div>
+      )}
     </div>
   );
 };
